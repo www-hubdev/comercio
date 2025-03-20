@@ -1,0 +1,231 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+header {
+    background-color: #004d40;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #80cbc4;
+}
+
+section.produtos {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    display: none;
+}
+
+.produto {
+    display: flex;
+    flex-direction: row-reverse;
+    background-color: white;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.produto:hover {
+    transform: scale(1.02);
+}
+
+.produto img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+.produto img:hover {
+    opacity: 0.9;
+}
+
+.produto .info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h2 {
+    color: #004d40;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+footer {
+    background-color: #004d40;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+footer .redes a {
+    color: white;
+    margin: 0 10px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.contato {
+    padding: 20px;
+    background-color: #e0f2f1;
+    text-align: center;
+    display: none;
+}
+
+.contato .mapa {
+    margin-top: 10px;
+}
+
+.whatsapp {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #25d366;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.whatsapp:hover {
+    background-color: #1ebe5d;
+}
+
+.sobre-nos {
+    padding: 60px 20px;
+    background-color: #ffffff;
+    max-width: 900px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: none;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.sobre-nos h2 {
+    color: #004d40;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.sobre-nos p {
+    line-height: 1.8;
+    font-size: 18px;
+    color: #555;
+    max-width: 800px;
+    margin: auto;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .produto {
+        flex-direction: column;
+    }
+
+    .produto img {
+        width: 100%;
+        height: auto;
+    }
+
+    .produto .info {
+        text-align: center;
+    }
+}
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+header.hero {
+    background: linear-gradient(135deg, #004d40, #00695c);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.hero .container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.hero .slogan {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.hero .botao {
+    background-color: #ff9800;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.hero .botao:hover {
+    background-color: #e68900;
+    transform: scale(1.05);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
