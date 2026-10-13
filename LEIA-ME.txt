@@ -1,0 +1,10 @@
+COMO PUBLICAR (GitHub Pages, grátis)
+1. Cria conta em github.com e um repositório novo (público), ex: servicos-angola.
+2. Carrega todos os ficheiros desta pasta (incluindo a pasta img).
+3. Settings > Pages > Branch: main > Save. O link aparece em 1-2 minutos.
+
+COMO ADICIONAR UM PROFISSIONAL
+1. Recebes o cadastro pelo WhatsApp (com as fotos).
+2. Guarda as fotos na pasta img (ex: img/manuel.jpg).
+3. Copia um bloco em dados.js, preenche e muda o id. Guarda e faz upload no GitHub.
+Apaga os 4 profissionais de exemplo quando tiveres reais.
