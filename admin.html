@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel Administrativo — Serviços Angola</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #fff;
+      --tx: #1b1f24;
+      --mut: #6b7280;
+      --bd: #e3e5e8;
+      --pri: #c8102e;
+      --ok: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c
+    }
+
+    @media(prefers-color-scheme:dark) {
+      :root {
+        --bg: #14161a;
+        --card: #1d2026;
+        --tx: #eceef1;
+        --mut: #9aa1ac;
+        --bd: #2d313a;
+        --pri: #ef4458;
+        --ok: #4ade80;
+        --warn: #fbbf24;
+        --bad: #f87171
+      }
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--tx)
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--bd)
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--bd);
+      background: var(--card);
+      color: var(--tx);
+      padding: 8px 14px;
+      border-radius: 8px
+    }
+
+    button.pri {
+      background: var(--pri);
+      border-color: var(--pri);
+      color: #fff
+    }
+
+    button.ok {
+      background: var(--ok);
+      border-color: var(--ok);
+      color: #fff
+    }
+
+    button.bad {
+      color: var(--bad);
+      border-color: var(--bad)
+    }
+
+    input {
+      font: inherit;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--tx);
+      margin-bottom: 12px
+    }
+
+    #login {
+      max-width: 340px;
+      margin: 12vh auto;
+      background: var(--card);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--bd)
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px
+    }
+
+    .tabs button.act {
+      background: var(--pri);
+      color: #fff;
+      border-color: var(--pri)
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 16px
+    }
+
+    .card h3 {
+      margin: 0 0 4px;
+      font-size: 16px
+    }
+
+    .mut {
+      color: var(--mut);
+      font-size: 13px
+    }
+
+    .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 10px 0
+    }
+
+    .tag {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 99px;
+      border: 1px solid var(--bd)
+    }
+
+    .acts {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px
+    }
+
+    .badge {
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .pendente {
+      color: var(--warn)
+    }
+
+    .aprovado {
+      color: var(--ok)
+    }
+
+    .rejeitado {
+      color: var(--bad)
+    }
+
+    .msg {
+      padding: 30px;
+      text-align: center;
+      color: var(--mut)
+    }
+
+    .hide {
+      display: none
+    }
+  </style>
+</head>
+
+<body>
+
+  <section id="login">
+    <h1>Painel Administrativo</h1>
+    <p class="mut">Acesso restrito a administradores.</p>
+    <input id="email" type="email" placeholder="Email" autocomplete="username">
+    <input id="senha" type="password" placeholder="Palavra-passe" autocomplete="current-password">
+    <button class="pri" id="btnEntrar" style="width:100%">Entrar</button>
+    <p id="erro" class="mut" style="color:var(--bad)"></p>
+  </section>
+
+  <section id="painel" class="hide">
+    <header>
+      <h1>Serviços Angola · Admin</h1>
+      <div><span id="quem" class="mut"></span> <button id="btnSair">Sair</button></div>
+    </header>
+    <main>
+      <div class="tabs" id="tabs"></div>
+      <div id="lista" class="grid"></div>
+    </main>
+  </section>
+
+  <script>
+    const SUPABASE_URL = 'https://ubqvzpqrubyhwgnmkdjm.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_lrjGAFTX6C0vW5nUIWvy7g_b4JAsoCV';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const $ = id => document.getElementById(id);
+    const ESTADOS = ['pendente', 'aprovado', 'rejeitado'];
+    let filtro = 'pendente', dados = [];
+
+    function el(tag, cls, txt) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (txt !== undefined && txt !== null) e.textContent = txt;
+      return e;
+    }
+
+    /* ---------- LOGIN ---------- */
+    async function entrar() {
+      $('erro').textContent = '';
+      const {data, error} = await db.auth.signInWithPassword({
+        email: $('email').value.trim(), password: $('senha').value
+      });
+      if (error) {$('erro').textContent = 'Email ou palavra-passe incorrectos.'; return;}
+      await iniciar();
+    }
+
+    async function iniciar() {
+      const {data: {user}} = await db.auth.getUser();
+      if (!user) return;
+      const {data: u} = await db.from('usuarios').select('nome,papel').eq('id', user.id).maybeSingle();
+      if (!u || u.papel !== 'admin') {
+        await db.auth.signOut();
+        $('erro').textContent = 'Esta conta não tem permissão de administrador.';
+        return;
+      }
+      $('quem').textContent = u.nome;
+      $('login').classList.add('hide');
+      $('painel').classList.remove('hide');
+      carregar();
+    }
+
+    async function sair() {
+      await db.auth.signOut();
+      location.reload();
+    }
+
+    /* ---------- DADOS ---------- */
+    async function carregar() {
+      $('lista').replaceChildren(el('div', 'msg', 'A carregar...'));
+      const {data, error} = await db.from('profissionais').select('*').order('criado_em', {ascending: false});
+      if (error) {$('lista').replaceChildren(el('div', 'msg', 'Erro: ' + error.message)); return;}
+      dados = data;
+      desenharTabs();
+      desenharLista();
+    }
+
+    function desenharTabs() {
+      const t = $('tabs'); t.replaceChildren();
+      ESTADOS.forEach(s => {
+        const n = dados.filter(p => p.estado === s).length;
+        const b = el('button', s === filtro ? 'act' : '', s.charAt(0).toUpperCase() + s.slice(1) + 's (' + n + ')');
+        b.onclick = () => {filtro = s; desenharTabs(); desenharLista();};
+        t.appendChild(b);
+      });
+    }
+
+    function desenharLista() {
+      const l = $('lista'); l.replaceChildren();
+      const itens = dados.filter(p => p.estado === filtro);
+      if (!itens.length) {l.appendChild(el('div', 'msg', 'Nenhum profissional ' + filtro + '.')); return;}
+      itens.forEach(p => {
+        const c = el('div', 'card');
+        c.appendChild(el('h3', '', p.nome));
+        c.appendChild(el('div', 'mut', [p.categoria, p.idade ? p.idade + ' anos' : null, p.experiencia].filter(Boolean).join(' · ')));
+        c.appendChild(el('div', 'mut', '📍 ' + [p.zona, p.morada].filter(Boolean).join(' — ')));
+        c.appendChild(el('p', '', p.descricao || ''));
+        const tg = el('div', 'tags');
+        (p.servicos || []).forEach(s => tg.appendChild(el('span', 'tag', s)));
+        c.appendChild(tg);
+        c.appendChild(el('div', 'mut', 'Cadastro: ' + new Date(p.criado_em).toLocaleString('pt-AO')));
+        c.appendChild(el('div', 'badge ' + p.estado, p.estado.toUpperCase()));
+
+        const a = el('div', 'acts');
+        const wa = el('button', '', 'WhatsApp');
+        wa.onclick = () => window.open('https://wa.me/' + String(p.whatsapp).replace(/\D/g, ''), '_blank', 'noopener');
+        a.appendChild(wa);
+        if (p.estado !== 'aprovado') {
+          const ok = el('button', 'ok', 'Aprovar'); ok.onclick = () => mudar(p.id, 'aprovado'); a.appendChild(ok);
+        }
+        if (p.estado !== 'rejeitado') {
+          const no = el('button', 'bad', 'Rejeitar'); no.onclick = () => mudar(p.id, 'rejeitado'); a.appendChild(no);
+        }
+        if (p.estado !== 'pendente') {
+          const pe = el('button', '', 'Voltar a pendente'); pe.onclick = () => mudar(p.id, 'pendente'); a.appendChild(pe);
+        }
+        const del = el('button', 'bad', 'Eliminar'); del.onclick = () => apagar(p.id, p.nome); a.appendChild(del);
+        c.appendChild(a);
+        l.appendChild(c);
+      });
+    }
+
+    async function mudar(id, estado) {
+      const {error} = await db.from('profissionais').update({estado}).eq('id', id);
+      if (error) {alert('Erro: ' + error.message); return;}
+      carregar();
+    }
+
+    async function apagar(id, nome) {
+      if (!confirm('Eliminar "' + nome + '" definitivamente?')) return;
+      const {error} = await db.from('profissionais').delete().eq('id', id);
+      if (error) {alert('Erro: ' + error.message); return;}
+      carregar();
+    }
+
+    $('btnEntrar').onclick = entrar;
+    $('btnSair').onclick = sair;
+    $('senha').addEventListener('keydown', e => {if (e.key === 'Enter') entrar();});
+    iniciar();
+  </script>
+</body>
+
+</html>
